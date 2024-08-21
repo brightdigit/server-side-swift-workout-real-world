@@ -7,10 +7,9 @@ flowchart TD
 	A(Apple Watch) -->|Sends Health Stats| B(Vapor Server)
 	B -->  |Sends Health Stats| C
 	C(Web Browser) -->  |Opens Web Socket| B 
-
+```
    2. Integration with Apple Watch
    3. User experience highlights
-```
 
 ![How it works Diagram](/media/gBeat-Works-2024-08-20-142518.svg)
 
