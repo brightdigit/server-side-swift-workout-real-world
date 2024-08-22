@@ -53,11 +53,87 @@ The initial approach was using `ngrok` to create an a public host name and enter
 
 ### Using Ngrok for public exposure of development servers
 
+The missing piece was get the ngrok url created and storing in the cloud somehow via a fairly simple method. 
+
 ### How Sublimation automates the Ngrok process
 
-### Cloud setup for meta-server access (using kvdb.io)
+
+```mermaid
+sequenceDiagram
+    participant DevServer as Development Server
+    participant Sub as Sublimation (Server)
+    participant Ngrok as Ngrok (https://ngrok.com)
+    participant KVdb as KVdb (https://kvdb.io)
+    participant SubClient as Sublimation (Client)
+    participant App as iOS/watchOS App
+    
+    DevServer->>Sub: Start development server
+    Sub->>Ngrok: Request public URL
+    Ngrok-->>Sub: Provide public URL<br/>(https://abc123.ngrok.io)
+    Sub->>KVdb: Store URL with bucket and key<br/>(bucket: "fdjf9012k20cv", key: "dev-server",<br/>url: https://abc123.ngrok.io)
+    App->>SubClient: Request server URL<br/>(bucket: "fdjf9012k20cv", key: "dev-server")
+    SubClient->>KVdb: Request URL<br/>(bucket: "fdjf9012k20cv", key: "dev-server")
+    KVdb-->>SubClient: Provide stored URL<br/>(https://abc123.ngrok.io)
+    SubClient-->>App: Return server URL<br/>(https://abc123.ngrok.io)
+    App->>Ngrok: Connect to development server<br/>(https://abc123.ngrok.io)
+    Ngrok->>DevServer: Forward request to local server
+```
+
+![SublimationNgrok Diagram](media/SublimationNgrok-2024-08-22-175342.svg)
+
+
+What I found was that we can run `ngrok` on startup and access the newly created url via the local API. To store it in the cloud I found a service called kvdb.io which only required a bucket name and key for storing the public url.
+
+#### Cloud setup for meta-server access (using kvdb.io)
+
+If you haven't already setup an account with ngrok and install the command-line tool via homebrew. Next let's setup a key-value storage with kvdb.io which is currently supported. _If you have another service, please create an issue in the repo. Your feedback is helpful._ 
+
+Sign up at kvdb.io and get a bucket name you'll use. You'll be using that for your setup. Essentially there are three components you'll need:
+
+* **ngrok executable path**
+    - if you installed via homebrew it's `/opt/homebrew/bin/ngrok` but you can find out using: `which ngrok` after installation
+* **bucket name** from your kvdb.io 
+* **key** from your kvdb.io 
+    - you just need to pick something unique for your server and client to use
+    
+Save these somewhere in your shared configuration for both your server and client to access, such as an `enum`:
+
+```swift
+public enum SublimationConfiguration {
+  public static let bucketName = "fdjf9012k20cv"
+  public static let key = "my-"
+}
+```
+
+
+#### Server Setup
+
+When creating your `Sublimation` object you'll want to use the provided convience initializers ``SublimationTunnel/TunnelSublimatory/init(ngrokPath:bucketName:key:application:isConnectionRefused:ngrokClient:)`` to make it easier for **ngrok** integration with the ``SublimationTunnel/TunnelSublimatory``:
+
+```swift
+let tunnelSublimatory = TunnelSublimatory(
+  ngrokPath: "/opt/homebrew/bin/ngrok", //
+  bucketName: SublimationConfiguration.bucketName, // "fdjf9012k20cv"
+  key: SublimationConfiguration.key, // "dev-server"
+  application: { myVaporApplication }, // pass your Vapor.Application here
+  isConnectionRefused: {$.isConnectionRefused}, // supplied by `SublimationVapor`
+  transport: AsyncHTTPClientTransport() // ClientTransport for Vapor
+)
+
+let sublimation = Sublimation(sublimatory: tunnelSublimatory)
+```
+
+#### Client Setup
+
+For the client, you'll need to import the ``SublimationKVdb`` module and retrieve the url via:
+
+```swift
+let hostURL = try await KVdb.url(withKey: key, atBucket: bucketName) 
+```
 
 ### Limitations and challenges encountered
+
+
 
 ## Bonjour implementation (ultimate solution)
 
