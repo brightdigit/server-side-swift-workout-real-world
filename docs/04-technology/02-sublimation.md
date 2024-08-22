@@ -128,6 +128,8 @@ let sublimation = Sublimation(sublimatory: tunnelSublimatory)
 For the client, you'll need to import the ``SublimationKVdb`` module and retrieve the url via:
 
 ```swift
+import SublimationKVdb
+
 let hostURL = try await KVdb.url(withKey: key, atBucket: bucketName) 
 ```
 
@@ -136,9 +138,19 @@ let hostURL = try await KVdb.url(withKey: key, atBucket: bucketName)
 - difficult setup with installing ngrok and setting up configuration for each developer
 - ngrok maybe already running?
 
-## Bonjour implementation (ultimate solution)
+## Bonjour Implementation
+
+The ultimate goal is something which requires no configuration almost 0 configuration. This is where Bonjour comes in.
+
+`what is Bonjour`
+
+
 
 ### How Sublimation uses Bonjour for local network discovery
+
+When the Hummingbird or Vapor server begins it will tell Sublimation the ip addresses or host names which are available to access the server from (including whether the port number and whether to use https or http). This is called a `BonjourSublimatory`. The `BonjourSublimatory` then uses `NWListener` to advertise this information both by send the data encoded using Protocol Buffers as well as inside the Text Record advertised.
+
+The iPhone or Apple Watch then uses a `BonjourClient` to fetch either an `AsyncStream` of `URL` or simply get the `first` one available.
 
 ### Benefits of the Bonjour approach over Ngrok
 
