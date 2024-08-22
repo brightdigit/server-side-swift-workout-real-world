@@ -133,7 +133,8 @@ let hostURL = try await KVdb.url(withKey: key, atBucket: bucketName)
 
 ### Limitations and challenges encountered
 
-
+- difficult setup with installing ngrok and setting up configuration for each developer
+- ngrok maybe already running?
 
 ## Bonjour implementation (ultimate solution)
 
