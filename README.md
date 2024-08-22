@@ -22,7 +22,25 @@
 	  2. Challenge: Sign in with Apple not available on Apple Watch simulator
 		 1. Impact on development and testing process
 		 2. Workarounds and solutions
-   2. Development Server Auto-discovery (emphasize this as a key technical issue)
+   2. [Development Server Auto-discovery](docs/04-technology/02-sublimation.md)   
+      1. The challenge of discovering local development servers in full stack development
+      2. Specific issues with Apple Watch development
+      3. Introduction to Sublimation: A Swift package solution
+         1. Overview of Sublimation's purpose and functionality
+         2. Server and Client components
+      4. Ngrok integration (initial approach)
+         1. Using Ngrok for public exposure of development servers
+         2. How Sublimation automates the Ngrok process
+         3. Cloud setup for meta-server access (using kvdb.io)
+         4. Limitations and challenges encountered
+      5. Bonjour implementation (ultimate solution)
+         1. How Sublimation uses Bonjour for local network discovery
+         2. Benefits of the Bonjour approach over Ngrok
+         3. Implementation details and code examples
+         4. How it solved auto-discovery challenges in gBeat
+      6. Impact on gBeat development
+         1. Performance and developer experience improvements
+         2. Seamless testing across iOS and watchOS devices
    3. Communication with Redis and WebSockets
    4. Implementing Apple Push Notification System (APNs)
    5. OpenAPI Integration
