@@ -172,6 +172,42 @@ When the Hummingbird or Vapor server begins it will tell Sublimation the ip addr
 
 The iPhone or Apple Watch then uses a `BonjourClient` to fetch either an `AsyncStream` of `URL` or simply get the `first` one available.
 
+#### Setting up your Server
+
+Create a `BindingConfiguration` with:
+
+* a list of host names and ip address
+* port number of the server
+* whether the server uses https or http
+
+```
+let bindingConfiguration = BindingConfiguration(
+  host: ["Leo's-Mac.local", "192.168.1.10"],
+  port: 8080
+  isSecure: false
+)
+```
+
+Create a `BonjourSublimatory` using that `BindingConfiguration` and include your server's logger. Then attach it to the `Sublimation` object:
+
+```
+let bonjour = BonjourSublimatory(
+  bindingConfiguration: bindingConfiguration,
+  logger: app.logger
+)
+let sublimation = Sublimation(sublimatory : bonjour)
+```
+
+#### Setting up your Client
+
+On the device, create a `BonjourClient` and either get an `AsyncStream` of `URL` objects or just ask for the first one:
+
+```
+let client = BonjourClient(logger: app.logger)
+let hostURL = await client.first()
+```
+
+
 ### Benefits of the Bonjour approach over Ngrok
 
 ### Implementation details and code examples
