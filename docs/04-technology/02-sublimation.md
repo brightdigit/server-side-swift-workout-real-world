@@ -210,9 +210,41 @@ let hostURL = await client.first()
 
 ### Benefits of the Bonjour approach over Ngrok
 
+- no external dependencies
+- minimal configuration
+
 ### Implementation details and code examples
 
-### How it solved auto-discovery challenges in gBeat
+Lastly `Sublimation` can be used in Server Side Swift either via a Vapor `LifecycleHandler` or Lifecycle `Service`. 
+
+If you are Hummingbird, you can just add it as a service:
+
+```swift
+let sublimation = Sublimation(
+  bindingConfiguration: .init(hosts: hosts, configuration: configuration.hosting)
+)
+
+var app = Application(
+  router: router,
+  server: .http1WebSocketUpgrade(webSocketRouter: wsRouter),
+  configuration: .init(address: .init(setup: configuration.hosting))
+)
+
+app.addServices(sublimation)
+```
+
+For `Vapor`, you'd add it to the lifecycle of the app:
+
+
+```swift
+let sublimation = Sublimation(
+  bindingConfiguration: .init(hosts: hosts, configuration: configuration.hosting)
+)
+
+var app : Application
+
+app.lifecycle.use(sublimation)
+```
 
 ## Impact on gBeat development
 
