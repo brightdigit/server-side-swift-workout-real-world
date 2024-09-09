@@ -43,10 +43,6 @@
          2. Seamless testing across iOS and watchOS devices
    3. Communication with Redis and WebSockets
    4. Implementing Apple Push Notification System (APNs)
-   5. OpenAPI Integration
-	  1. Generating API documentation
-	  2. Ensuring consistency between API specification and implementation
-	  3. Benefits for frontend-backend communication and third-party integrations
    6. Web Development: Building the gBeat Website
 	  1. Choosing VueJS as the frontend framework
 		 1. Advantages for a fitness streaming application
@@ -59,7 +55,6 @@
 		 2. Optimized production builds
 	  4. Webpack configuration for advanced scenarios
 	  5. Challenges and solutions in creating a responsive fitness streaming interface
-	  6. Performance optimizations for live video streaming
 5. Challenges and Solutions
    1. Android integration
 	  1. Integrating Firebase Cloud Messaging (FCM) for cross-platform support
@@ -75,7 +70,11 @@
    1. Deploying to Heroku
    2. Setting up Continuous Integration with GitLab and GitHub
 7. Future Plans
-   1. Upcoming features or improvements
+   1. Upcoming features or improvements      
+      5. OpenAPI Integration
+        1. Generating API documentation
+        2. Ensuring consistency between API specification and implementation
+        3. Benefits for frontend-backend communication and third-party integrations
    2. Potential expansions of the gBeat platform
 8. Conclusion
    1. Recap of key learnings
