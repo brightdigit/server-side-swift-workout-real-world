@@ -4,4 +4,5 @@
       1. Generating API documentation
       2. Ensuring consistency between API specification and implementation
       3. Benefits for frontend-backend communication and third-party integrations
+    6. React Native XCFramework/Node Module
  2. Potential expansions of the gBeat platform
