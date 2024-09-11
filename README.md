@@ -43,7 +43,7 @@
          2. Seamless testing across iOS and watchOS devices
    3. Communication with Redis and WebSockets
    4. Implementing Apple Push Notification System (APNs)
-   6. Web Development: Building the gBeat Website
+   5. Web Development: Building the gBeat Website
 	  1. Choosing VueJS as the frontend framework
 		 1. Advantages for a fitness streaming application
 		 2. Integration with Swift backend
