@@ -5,4 +5,6 @@
       2. Ensuring consistency between API specification and implementation
       3. Benefits for frontend-backend communication and third-party integrations
     6. React Native XCFramework/Node Module
+    7. Alternative Networking Connections
+    
  2. Potential expansions of the gBeat platform

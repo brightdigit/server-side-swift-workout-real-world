@@ -1,9 +1,33 @@
-6. Deployment and CI/CD
-  1. Deploying to Heroku
+# Deployment and CI/CD
+
+## Setting up Continuous Integration with GitLab
+
+AppCertificates
+Heroku
+Web
+Swift Package
+App 
+
+App -> run fastlane
+  contains SPM
+    contains Web
+    
+Heroku mirrors SPM with Web
+
+
+Poly Repo
+Submodules
+Fastlane
+
+## Setting up Continuous Integration with GitHub
+
+Mono Repo
+
+## Deploying to Heroku
+
+### Setting up Build Packs
+
+### 
     1. Build Packs
       1. Vapor
       2. JS
-  2. Setting up Continuous Integration with GitLab and GitHub
-    1. GitLab
-      1. Mono Repo - Copy
-    2. GitHub
