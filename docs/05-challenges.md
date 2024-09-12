@@ -1,7 +1,11 @@
-5. Challenges and Solutions
- 1. Android integration
-  1. Integrating Firebase Cloud Messaging (FCM) for cross-platform support
-  2. Implementing Sign in with Google
+# Challenges and Solutions
+
+## Android integration
+
+### Integrating Firebase Cloud Messaging (FCM) for cross-platform support
+
+### Implementing Sign in with Google
+
  2. Creating a White Label app
   1. Issues with React Native and how Swift addressed them
  3. Developing a Chrome Extension for YouTube Workouts
