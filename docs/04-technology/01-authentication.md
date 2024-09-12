@@ -16,7 +16,9 @@
 - Simulator can fake HealthKit stats be not Sign In With Apple `what happens`
 - How can we fake **sign in with apple**
 	 
-### Impact on development and testing process
+### Impact on development and testing process 
+
+`link to simulator services and code snippet`
 
 - On development server save the token as a file on the Mac and copy it to the simulator directly
 - Login via web site

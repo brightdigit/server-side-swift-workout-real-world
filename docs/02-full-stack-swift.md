@@ -38,4 +38,6 @@ Being able to easily debug and analyze server-side and device side code via Xcod
 
 ## Case Study: gBeat's Experience with Full Stack Swift
 
-Let's now talk about how gBeat took advatage of this.
+Let's now talk about how gBeat took advantage of this.
+
+380 users
