@@ -1,5 +1,7 @@
 # Why
 
+# Introduction to Server-Side Swift
+
 It's one thing to create a server-side app which works for your iPhone and runs a simple service but I wanted to create an app which was dynamic and used Apple's tiniest device - the Apple Watch.
 
 ## Brief overview of Heartwitch: The inspiration behind gBeat
