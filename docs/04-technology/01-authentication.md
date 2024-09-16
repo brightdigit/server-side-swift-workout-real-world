@@ -27,25 +27,38 @@ extension SimCtl {
     let type: ContainerID
   }
 
+  /// Saves the token to all booted simulator devices in the container directory.
+  /// - Parameters:
+  ///   - token: Authentication Token
+  ///   - relativePath: relative path inside the container.
+  ///   - appBundleIdentifier: Application Bundle Identifier.
+  ///   - type: Container Type
+  ///   - deviceState: Filter Devices by Device State
   internal func saveToSimulators(
     _ token: String,
     toRelativePath relativePath: String,
-    appBundleIdentifier: String
+    appBundleIdentifier: String,
+    type: ContainerID = .data,
+    deviceState: DeviceState? = .booted
   ) async throws {
+    // get container paths
     let containerPaths = try await self.fetchContainerPaths(
       appBundleIdentifier: appBundleIdentifier,
-      type: .data
+      type: type
     )
 
+    // define file paths
     let filePaths = containerPaths.map { $0.appending("/" + relativePath) }
 
+    // throw error is there's simulator running
     guard !filePaths.isEmpty else {
       throw MissingSimulatorError(
         appBundleIdentifier: appBundleIdentifier,
-        type: .data
+        type: type
       )
     }
 
+    // write the token to each simulator's path
     try await withThrowingTaskGroup(of: Void.self) { taskGroup in
       for filePath in filePaths {
         taskGroup.addTask {
@@ -61,73 +74,44 @@ extension SimCtl {
     }
   }
 
+  /// Fetches container paths for a specific application.
+  /// - Parameters:
+  ///   - appBundleIdentifier: Application Bundle Identifier
+  ///   - type: Container Type
+  ///   - deviceState: Filter Devices by Device State
+  /// - Returns: A list of paths to all containers based on the application identifier.
   internal func fetchContainerPaths(
     appBundleIdentifier: String,
     type: ContainerID,
-    deviceState: DeviceState = .booted
-  ) async throws -> [Path] {
-    try await withThrowingTaskGroup(of: Path?.self) { taskGroup in
-      let list = try await self.run(List())
-      let devices = list.devices.values
-        .flatMap { $0 }
-        .filter { $0.state == deviceState }
-      for device in devices {
-        taskGroup.addTask {
-          do {
-            return try await self.run(
-              GetAppContainer(
-                appBundleIdentifier: appBundleIdentifier,
-                container: type,
-                simulator: .id(device.udid)
-              )
-            )
-          } catch GetAppContainer.Error.missingData {
-            return nil
-          }
-        }
-      }
-
-      return try await taskGroup.reduce(into: [Path]()) { paths, path in
-        if let path {
-          paths.append(path)
-        }
-      }
-    }
-  }
-}
-```
-
-```swift
-extension SimCtl {
-  func fetchContainerPaths(
-    appBundleIdentifier: String,
-    type: ContainerID,
-    deviceState: DeviceState = .booted
+    deviceState: DeviceState? = .booted
   ) async throws -> [Path] {
     try await withThrowingTaskGroup(of: Path?.self) { taskGroup in
       // run `xcrun simctl list devices`
       let list = try await self.run(List())
-      // filter the devices which are `deviceState` i.e. booted
-      let devices = list.devices.values
-        .flatMap { $0 }
-        .filter { $0.state == deviceState }
+      // filter the devices which match the `deviceState`
+      let devices: [Device]
+      let listDevices = list.devices.values.flatMap { $0 }
+      if let deviceState {
+        devices =
+          listDevices
+          .filter { $0.state == deviceState }
+      } else {
+        devices = listDevices
+      }
       for device in devices {
+        // for each device run
+        //  `xcrun simctl get_app_container {device.udid} {appBundleIdentifier} {type}`
+        // example:
+        //  `xcrun simctl get_app_container E294F724-10D0-422E-894C-745791166D86 com.bpmsync.GBeat.watchkitapp data`
+        let subcommand = GetAppContainer(
+          appBundleIdentifier: appBundleIdentifier,
+          container: type,
+          simulator: .id(device.udid)
+        )
         taskGroup.addTask {
           do {
-            // run
-            //  `xcrun simctl get_app_container {.id(device.udid)} {appBundleIdentifier} {type}`
-            // example:
-            //  `xcrun simctl get_app_container E294F724-10D0-422E-894C-745791166D86 com.bpmsync.GBeat.watchkitapp data`
-            let appContainerSubcommand = GetAppContainer(
-              appBundleIdentifier: appBundleIdentifier,
-              container: type,
-              simulator: .id(device.udid)
-            )
-            // ...
-            return try await self.run(appContainerSubcommand)
+            return try await self.run(subcommand)
           } catch GetAppContainer.Error.missingData {
-            return nil
-          } catch {
             return nil
           }
         }
@@ -135,13 +119,13 @@ extension SimCtl {
 
       return try await taskGroup.reduce(into: [Path]()) { paths, path in
         if let path {
-          Self.logger.debug("Discovered Simulator at: \(path)")
           paths.append(path)
         }
       }
     }
   }
 }
+
 ```
 
 - On development server save the token as a file on the Mac and copy it to the simulator directly
