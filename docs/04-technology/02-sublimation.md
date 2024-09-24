@@ -180,7 +180,7 @@ Create a `BindingConfiguration` with:
 * port number of the server
 * whether the server uses https or http
 
-```
+```swift
 let bindingConfiguration = BindingConfiguration(
   host: ["Leo's-Mac.local", "192.168.1.10"],
   port: 8080
@@ -190,7 +190,7 @@ let bindingConfiguration = BindingConfiguration(
 
 Create a `BonjourSublimatory` using that `BindingConfiguration` and include your server's logger. Then attach it to the `Sublimation` object:
 
-```
+```swift
 let bonjour = BonjourSublimatory(
   bindingConfiguration: bindingConfiguration,
   logger: app.logger
@@ -202,7 +202,7 @@ let sublimation = Sublimation(sublimatory : bonjour)
 
 On the device, create a `BonjourClient` and either get an `AsyncStream` of `URL` objects or just ask for the first one:
 
-```
+```swift
 let client = BonjourClient(logger: app.logger)
 let hostURL = await client.first()
 ```
